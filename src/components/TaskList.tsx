@@ -1,4 +1,7 @@
 import React from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { useTheme } from "../context/ThemeContext";
 import { Task } from "../types/Task";
 import TaskItem from "./TaskItem";
 interface TaskListProps {
@@ -6,6 +9,7 @@ interface TaskListProps {
 }
 
 const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
+  const { darkMode } = useTheme();
   // Sort tasks by due date (closest first) and then by priority
   const sortedTasks = [...tasks].sort((a, b) => {
     // First by completion status
@@ -28,8 +32,8 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
   if (sortedTasks.length === 0) {
     return (
       <div
-        className="text-center py-8 text-gray-500"
-        style={{ color: "#A1A6B4" }}
+        className="text-center py-8"
+        style={{ color: darkMode ? "#9CA3AF" : "#A1A6B4" }}
       >
         No tasks found. Add a new task to get started!
       </div>
@@ -37,11 +41,13 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
   }
 
   return (
-    <div className="space-y-3">
-      {sortedTasks.map((task) => (
-        <TaskItem key={task.id} task={task} />
-      ))}
-    </div>
+    <DndProvider backend={HTML5Backend}>
+      <div className="space-y-3">
+        {sortedTasks.map((task) => (
+          <TaskItem key={task.id} task={task} />
+        ))}
+      </div>
+    </DndProvider>
   );
 };
 

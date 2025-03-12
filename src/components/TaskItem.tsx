@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTaskContext } from "../context/TaskContext";
+import { useTheme } from "../context/ThemeContext";
 import { Task } from "../types/Task";
 import TaskForm from "./TaskForm";
 interface TaskItemProps {
@@ -7,6 +8,7 @@ interface TaskItemProps {
 }
 
 const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
+  const { darkMode } = useTheme();
   const { toggleTaskStatus, deleteTask } = useTaskContext();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -39,22 +41,30 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   };
 
   return (
-    <>
+    <div className="cursor-move">
       {isEditing ? (
         <TaskForm task={task} onClose={() => setIsEditing(false)} />
       ) : (
         <div
           className={`p-4 rounded-lg border-l-4 transition-all ${
             task.completed
-              ? "bg-gray-50 border-gray-300"
+              ? "dark:bg-gray-800 bg-gray-50 border-gray-300 dark:border-gray-600"
               : isOverdue()
-              ? "bg-red-50 border-red-500"
-              : "bg-white border-l-4"
+              ? "dark:bg-red-900/20 bg-red-50 border-red-500"
+              : "dark:bg-gray-800 bg-white border-l-4"
           }`}
           style={{
-            backgroundColor: task.completed ? "#F8F8F8" : "#FFFFFF",
+            backgroundColor: task.completed
+              ? darkMode
+                ? "#1A1E29"
+                : "#F8F8F8"
+              : darkMode
+              ? "#1F2937"
+              : "#FFFFFF",
             borderLeftColor: task.completed
-              ? "#A1A6B4"
+              ? darkMode
+                ? "#6B7280"
+                : "#A1A6B4"
               : isOverdue()
               ? "#FF4747"
               : "#94C5CC",
@@ -67,11 +77,15 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                 className={`mt-1 w-5 h-5 rounded-full border ${
                   task.completed
                     ? "bg-blue-500 border-blue-500"
-                    : "border-gray-300"
+                    : "border-gray-300 dark:border-gray-600"
                 } flex items-center justify-center`}
                 style={{
                   backgroundColor: task.completed ? "#94C5CC" : "transparent",
-                  borderColor: task.completed ? "#94C5CC" : "#A1A6B4",
+                  borderColor: task.completed
+                    ? "#94C5CC"
+                    : darkMode
+                    ? "#6B7280"
+                    : "#A1A6B4",
                 }}
               >
                 {task.completed && (
@@ -93,10 +107,18 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                 <h3
                   className={`font-medium ${
                     task.completed
-                      ? "text-gray-500 line-through"
-                      : "text-gray-900"
+                      ? "text-gray-500 dark:text-gray-400 line-through"
+                      : "text-gray-900 dark:text-gray-100"
                   }`}
-                  style={{ color: task.completed ? "#A1A6B4" : "#000100" }}
+                  style={{
+                    color: task.completed
+                      ? darkMode
+                        ? "#9CA3AF"
+                        : "#A1A6B4"
+                      : darkMode
+                      ? "#FFFFFF"
+                      : "#000100",
+                  }}
                 >
                   {task.title}
                 </h3>
@@ -104,9 +126,19 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                 {task.description && (
                   <p
                     className={`mt-1 text-sm ${
-                      task.completed ? "text-gray-400" : "text-gray-600"
+                      task.completed
+                        ? "text-gray-400 dark:text-gray-500"
+                        : "text-gray-600 dark:text-gray-300"
                     }`}
-                    style={{ color: task.completed ? "#A1A6B4" : "#000100" }}
+                    style={{
+                      color: task.completed
+                        ? darkMode
+                          ? "#6B7280"
+                          : "#A1A6B4"
+                        : darkMode
+                        ? "#D1D5DB"
+                        : "#000100",
+                    }}
                   >
                     {task.description}
                   </p>
@@ -114,12 +146,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
 
                 <div className="mt-2 flex flex-wrap gap-2 items-center text-xs">
                   <span
-                    className={`px-2 py-1 rounded-full ${getPriorityColor(
-                      task.priority
-                    )}`}
+                    className="px-2 py-1 rounded-full"
                     style={{
-                      backgroundColor: "#B4D2E7",
-                      color: "#000100",
+                      backgroundColor: darkMode ? "#374151" : "#B4D2E7",
+                      color: darkMode ? "#D1D5DB" : "#000100",
                     }}
                   >
                     {task.priority.charAt(0).toUpperCase() +
@@ -127,25 +157,33 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                   </span>
 
                   <span
-                    className="px-2 py-1 rounded-full bg-blue-100 text-blue-800"
+                    className="px-2 py-1 rounded-full"
                     style={{
-                      backgroundColor: "#F8F8F8",
-                      color: "#000100",
-                      border: "1px solid #94C5CC",
+                      backgroundColor: darkMode ? "#1A1E29" : "#F8F8F8",
+                      color: darkMode ? "#D1D5DB" : "#000100",
+                      border: `1px solid ${darkMode ? "#4B5563" : "#94C5CC"}`,
                     }}
                   >
                     {task.category}
                   </span>
 
                   <span
-                    className={`px-2 py-1 rounded-full ${
-                      isOverdue()
-                        ? "bg-red-100 text-red-800"
-                        : "bg-gray-100 text-gray-800"
-                    }`}
+                    className="px-2 py-1 rounded-full"
                     style={{
-                      backgroundColor: isOverdue() ? "#FFE5E5" : "#F8F8F8",
-                      color: isOverdue() ? "#FF4747" : "#000100",
+                      backgroundColor: isOverdue()
+                        ? darkMode
+                          ? "#7F1D1D"
+                          : "#FFE5E5"
+                        : darkMode
+                        ? "#1A1E29"
+                        : "#F8F8F8",
+                      color: isOverdue()
+                        ? darkMode
+                          ? "#FCA5A5"
+                          : "#FF4747"
+                        : darkMode
+                        ? "#D1D5DB"
+                        : "#000100",
                     }}
                   >
                     Due: {formatDate(task.dueDate)}
@@ -158,8 +196,8 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
             <div className="flex space-x-2">
               <button
                 onClick={() => setIsEditing(true)}
-                className="text-blue-600 hover:text-blue-800"
-                style={{ color: "#94C5CC" }}
+                className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                style={{ color: darkMode ? "#60A5FA" : "#94C5CC" }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -179,8 +217,8 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
 
               <button
                 onClick={() => deleteTask(task.id)}
-                className="text-red-600 hover:text-red-800"
-                style={{ color: "#FF4747" }}
+                className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                style={{ color: darkMode ? "#F87171" : "#FF4747" }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -201,7 +239,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

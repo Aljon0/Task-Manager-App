@@ -1,7 +1,9 @@
 import React, { useMemo } from "react";
 import { useTaskContext } from "../context/TaskContext";
+import { useTheme } from "../context/ThemeContext";
 
 const TaskStats: React.FC = () => {
+  const { darkMode } = useTheme();
   const { tasks } = useTaskContext();
 
   const stats = useMemo(() => {
@@ -63,7 +65,10 @@ const TaskStats: React.FC = () => {
 
   return (
     <div>
-      <h3 className="text-lg font-semibold mb-3" style={{ color: "#000100" }}>
+      <h3
+        className="text-lg font-semibold mb-3"
+        style={{ color: darkMode ? "#FAFAFA" : "#000100" }}
+      >
         Task Overview
       </h3>
       <div className="space-y-2">

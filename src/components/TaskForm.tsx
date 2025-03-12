@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTaskContext } from "../context/TaskContext";
+import { useTheme } from "../context/ThemeContext";
 import { Task } from "../types/Task";
 
 interface TaskFormProps {
@@ -8,6 +9,7 @@ interface TaskFormProps {
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({ onClose, task }) => {
+  const { darkMode } = useTheme();
   const { addTask, updateTask, categories, addCategory } = useTaskContext();
   const [newCategory, setNewCategory] = useState("");
   const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
@@ -71,16 +73,19 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, task }) => {
   return (
     <div className="fixed inset-0 backdrop-blur-xs bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div
-        className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto"
-        style={{ backgroundColor: "#F8F8F8" }}
+        className="rounded-lg shadow-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto transition-colors duration-200"
+        style={{ backgroundColor: darkMode ? "#1F2937" : "#F8F8F8" }}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold" style={{ color: "#000100" }}>
+          <h2
+            className="text-xl font-semibold"
+            style={{ color: darkMode ? "#FFFFFF" : "#000100" }}
+          >
             {task ? "Edit Task" : "Create New Task"}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -103,6 +108,29 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, task }) => {
           <div>
             <label
               htmlFor="title"
+              className="block text-sm font-medium"
+              style={{ color: darkMode ? "#FFFFFF" : "#000100" }}
+            >
+              Title <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              required
+              className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+              style={{
+                borderColor: "#94C5CC",
+                backgroundColor: darkMode ? "#374151" : "#FFFFFF",
+                color: darkMode ? "#FFFFFF" : "#000100",
+              }}
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="title"
               className="block text-sm font-medium text-gray-700"
               style={{ color: "#000100" }}
             >
@@ -116,7 +144,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, task }) => {
               onChange={handleChange}
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              style={{ borderColor: "#94C5CC" }}
+              style={{
+                borderColor: darkMode ? "#6B7280" : "#D1D5DB",
+                backgroundColor: darkMode ? "#374151" : "#FFFFFF",
+                color: darkMode ? "#FFFFFF" : "#000100",
+              }}
             />
           </div>
 
@@ -155,7 +187,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, task }) => {
               onChange={handleChange}
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              style={{ borderColor: "#94C5CC" }}
+              style={{
+                borderColor: darkMode ? "#6B7280" : "#D1D5DB",
+                backgroundColor: darkMode ? "#374151" : "#FFFFFF",
+                color: darkMode ? "#FFFFFF" : "#000100",
+              }}
             />
           </div>
 
@@ -196,7 +232,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, task }) => {
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  style={{ borderColor: "#94C5CC" }}
+                  style={{
+                    borderColor: darkMode ? "#6B7280" : "#D1D5DB",
+                    backgroundColor: darkMode ? "#374151" : "#FFFFFF",
+                    color: darkMode ? "#FFFFFF" : "#000100",
+                  }}
                   placeholder="New category name"
                 />
                 <button
@@ -249,7 +289,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, task }) => {
               <label
                 htmlFor="completed"
                 className="ml-2 block text-sm text-gray-700"
-                style={{ color: "#000100" }}
+                style={{
+                  borderColor: darkMode ? "#6B7280" : "#D1D5DB",
+                  backgroundColor: darkMode ? "#374151" : "#FFFFFF",
+                  color: darkMode ? "#FFFFFF" : "#000100",
+                }}
               >
                 Mark as completed
               </label>
@@ -260,7 +304,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ onClose, task }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="px-4 py-2 border rounded-md shadow-sm text-sm font-medium transition-colors duration-200"
+              style={{
+                borderColor: darkMode ? "#6B7280" : "#D1D5DB",
+                backgroundColor: darkMode ? "#374151" : "#FFFFFF",
+                color: darkMode ? "#FFFFFF" : "#000100",
+              }}
             >
               Cancel
             </button>

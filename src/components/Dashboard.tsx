@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTaskContext } from "../context/TaskContext";
+import { useTheme } from "../context/ThemeContext";
+import { Task } from "../types/Task";
 import CategoryFilter from "./CategoryFilter";
+import DarkModeSwitch from "./DarkModeSwitch";
 import EmptyState from "./EmptyState";
 import Notification from "./Notification";
 import SearchBar from "./SearchBar";
@@ -9,7 +12,8 @@ import TaskList from "./TaskList";
 import TaskStats from "./TaskStats";
 
 const Dashboard: React.FC = () => {
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const { darkMode } = useTheme();
+  const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const {
     tasks,
@@ -19,38 +23,50 @@ const Dashboard: React.FC = () => {
     dismissNotification,
   } = useTaskContext();
 
-  const displayedTasks =
+  const displayedTasks: Array<Task> =
     searchResults !== null
       ? searchResults
       : selectedCategory
-      ? tasks.filter((task) => task.category === selectedCategory)
+      ? tasks.filter((task: Task) => task.category === selectedCategory)
       : tasks;
 
   return (
     <div className="container mx-auto p-4 md:p-6">
-      <header className="mb-8">
-        <h1
-          className="text-3xl font-bold text-gray-900"
-          style={{ color: "#000100" }}
-        >
-          Task Manager
-        </h1>
-        <p className="text-gray-500" style={{ color: "#A1A6B4" }}>
-          Organize your tasks efficiently
-        </p>
+      <header className="mb-8 flex justify-between items-center">
+        <div>
+          <h1
+            className="text-3xl font-bold text-gray-900 dark:text-gray-100"
+            style={{ color: darkMode ? "#FFFFFF" : "#000100" }}
+          >
+            Task Manager
+          </h1>
+          <p
+            className="text-gray-500 dark:text-gray-400"
+            style={{ color: darkMode ? "#B2B6C4" : "#A1A6B4" }}
+          >
+            Organize your tasks efficiently
+          </p>
+        </div>
+        <DarkModeSwitch />
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1">
           <div
-            className="bg-white rounded-lg shadow-sm p-4 mb-6"
-            style={{ backgroundColor: "#F8F8F8", borderColor: "#B4D2E7" }}
+            className="rounded-lg shadow-sm p-4 mb-6 transition-colors duration-200"
+            style={{
+              backgroundColor: darkMode ? "#1F2937" : "#F8F8F8",
+              borderColor: darkMode ? "#374151" : "#B4D2E7",
+            }}
           >
             <TaskStats />
           </div>
           <div
-            className="bg-white rounded-lg shadow-sm p-4"
-            style={{ backgroundColor: "#F8F8F8", borderColor: "#B4D2E7" }}
+            className="rounded-lg shadow-sm p-4 transition-colors duration-200"
+            style={{
+              backgroundColor: darkMode ? "#1F2937" : "#F8F8F8",
+              borderColor: darkMode ? "#374151" : "#B4D2E7",
+            }}
           >
             <CategoryFilter
               selectedCategory={selectedCategory}
@@ -61,7 +77,10 @@ const Dashboard: React.FC = () => {
 
         <div className="lg:col-span-3">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold" style={{ color: "#000100" }}>
+            <h2
+              className="text-xl font-semibold dark:text-gray-100"
+              style={{ color: darkMode ? "#FFFFFF" : "#000100" }}
+            >
               {searchResults !== null
                 ? `Search Results (${searchResults.length})`
                 : selectedCategory
@@ -70,7 +89,7 @@ const Dashboard: React.FC = () => {
             </h2>
             <button
               onClick={() => setIsFormOpen(true)}
-              className="px-4 py-2 rounded-md text-white font-medium"
+              className="px-4 py-2 rounded-md text-white font-medium transition-colors"
               style={{ backgroundColor: "#94C5CC" }}
             >
               Add New Task
@@ -80,8 +99,11 @@ const Dashboard: React.FC = () => {
           <SearchBar onSearch={searchTasks} />
 
           <div
-            className="bg-white rounded-lg shadow-sm p-4"
-            style={{ backgroundColor: "#F8F8F8", borderColor: "#B4D2E7" }}
+            className="rounded-lg shadow-sm p-4 transition-colors duration-200"
+            style={{
+              backgroundColor: darkMode ? "#1F2937" : "#F8F8F8",
+              borderColor: darkMode ? "#374151" : "#B4D2E7",
+            }}
           >
             {displayedTasks.length > 0 ? (
               <TaskList tasks={displayedTasks} />
