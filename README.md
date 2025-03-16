@@ -29,7 +29,7 @@ Managing daily tasks efficiently is crucial for productivity. Many users struggl
 
 ### Hosting: Vercel (Frontend), Render/Atlas (Backend & Database)
 
-## Features Implemented
+## ✨ Features Implemented
 
 ### Task Dashboard
 
@@ -84,3 +84,11 @@ Managing daily tasks efficiently is crucial for productivity. Many users struggl
 ## Conclusion
 
 - The Task Manager App successfully provides an intuitive and efficient way to manage tasks. The combination of React, TailwindCSS, and MongoDB ensures a smooth user experience with a modern design. Future enhancements could include user authentication, notifications, and recurring tasks for better productivity management.
+
+## 👨‍💻 Author
+
+Your Name - [Your GitHub](https://github.com/Aljon0) - [Your Portfolio](https://yourportfolio.com)
+
+---
+
+Made with ❤️ using React, Tailwind CSS, Vite, MongoDB, Expressjs and Nodejs
