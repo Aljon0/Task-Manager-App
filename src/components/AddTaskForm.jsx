@@ -60,7 +60,7 @@ const AddTaskForm = ({
     const taskData = {
       title,
       description,
-      dueDate,
+      dueDate: dueDate,
       priority,
       category: selectedCategory,
       completed: task ? task.completed : false,

@@ -12,7 +12,7 @@ const TaskDashboard = ({ tasks }) => {
   // Get tasks due today
   const today = new Date().toISOString().split("T")[0];
   const dueTodayTasks = tasks.filter(
-    (task) => task.dueDate === today && !task.completed
+    (task) => task.due_date === today && !task.completed
   ).length;
 
   // Calculate completion percentage

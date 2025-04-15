@@ -95,7 +95,7 @@ const TaskList = ({ tasks, onDelete, onToggleComplete, onEdit }) => {
                         task.priority.slice(1)}
                     </span>
                     <span className="inline-flex items-center text-xs text-[#403D39] px-2 py-1 rounded-md">
-                      Due: {new Date(task.dueDate).toLocaleDateString()}
+                      Due: {new Date(task.due_date).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
