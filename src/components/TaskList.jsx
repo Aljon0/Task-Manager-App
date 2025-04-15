@@ -28,7 +28,7 @@ const TaskList = ({ tasks, onDelete, onToggleComplete, onEdit }) => {
     }
 
     // Finally by due date
-    return new Date(a.dueDate) - new Date(b.dueDate);
+    return new Date(a.due_date) - new Date(b.due_date);
   });
 
   if (tasks.length === 0) {

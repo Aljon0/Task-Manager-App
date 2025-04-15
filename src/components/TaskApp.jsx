@@ -58,20 +58,22 @@ function TaskApp() {
           event: "*",
           schema: "public",
           table: "tasks",
-          filter: `user_id=eq.${user.id}`, // Only listen for current user's changes
+          filter: user ? `user_id=eq.${user.id}` : undefined,
         },
         (payload) => {
+          console.log("Real-time update received:", payload); // Add this for debugging
+
           if (payload.eventType === "INSERT") {
-            setTasks((prev) => [...prev, payload.new]);
+            setTasks((current) => [...current, payload.new]);
           } else if (payload.eventType === "UPDATE") {
-            setTasks((prev) =>
-              prev.map((task) =>
+            setTasks((current) =>
+              current.map((task) =>
                 task.id === payload.new.id ? payload.new : task
               )
             );
           } else if (payload.eventType === "DELETE") {
-            setTasks((prev) =>
-              prev.filter((task) => task.id !== payload.old.id)
+            setTasks((current) =>
+              current.filter((task) => task.id !== payload.old.id)
             );
           }
         }
@@ -85,6 +87,27 @@ function TaskApp() {
 
   const addTask = async (task) => {
     try {
+      // Create a temp ID for optimistic update
+      const tempId = `temp-${Date.now()}`;
+
+      // Add to local state immediately with temp ID
+      const newTask = {
+        id: tempId,
+        title: task.title,
+        description: task.description,
+        due_date: task.dueDate,
+        priority: task.priority,
+        category: task.category,
+        completed: false,
+        user_id: user.id,
+        // Add a flag to indicate this is temporary
+        isTemp: true,
+      };
+
+      setTasks((current) => [...current, newTask]);
+      setIsAddTaskModalOpen(false);
+
+      // Then add to database
       const { data, error } = await supabase
         .from("tasks")
         .insert([
@@ -101,7 +124,13 @@ function TaskApp() {
         .select();
 
       if (error) throw error;
-      setIsAddTaskModalOpen(false);
+
+      // Replace temp task with real one from database
+      if (data && data.length > 0) {
+        setTasks((current) =>
+          current.map((t) => (t.id === tempId ? data[0] : t))
+        );
+      }
     } catch (error) {
       console.error("Error adding task:", error.message);
     }
@@ -144,6 +173,12 @@ function TaskApp() {
       const task = tasks.find((t) => t.id === id);
       if (!task) return;
 
+      setTasks((current) =>
+        current.map((t) =>
+          t.id === id ? { ...t, completed: !t.completed } : t
+        )
+      );
+
       const { error } = await supabase
         .from("tasks")
         .update({ completed: !task.completed })
@@ -152,13 +187,14 @@ function TaskApp() {
       if (error) throw error;
     } catch (error) {
       console.error("Error toggling task completion:", error.message);
+      setTasks((current) => [...tasks]);
     }
   };
 
   const editTask = (task) => {
     setTaskToEdit({
       ...task,
-      dueDate: task.due_date, // Map due_date to dueDate for the form
+      dueDate: task.due_date,
     });
     setIsAddTaskModalOpen(true);
   };
