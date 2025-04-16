@@ -255,7 +255,7 @@ function TaskApp() {
 
       {/* Sign Out Alert Modal */}
       {showSignOutAlert && (
-        <div className="fixed inset-0 backdrop-blur-sm backdrop-blur-xs bg-opacity-30 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 backdrop-blur-xs bg-opacity-30 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 border-l-4 border-[#EB5E28]">
             <h3 className="text-xl font-semibold text-[#252422] mb-3">
               Sign Out Confirmation
