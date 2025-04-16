@@ -14,6 +14,7 @@ function TaskApp() {
   const { user, signOut } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("All");
+  const [showSignOutAlert, setShowSignOutAlert] = useState(false);
   const [categories, setCategories] = useState([
     "Work",
     "Personal",
@@ -208,32 +209,77 @@ function TaskApp() {
   const filteredTasks =
     filter === "All" ? tasks : tasks.filter((task) => task.category === filter);
 
+  const handleSignOutClick = () => {
+    setShowSignOutAlert(true);
+  };
+
+  const confirmSignOut = () => {
+    signOut();
+    setShowSignOutAlert(false);
+  };
+
+  const cancelSignOut = () => {
+    setShowSignOutAlert(false);
+  };
+
   return (
     <div className="min-h-screen bg-[#FFFCF2]">
       <header className="bg-[#252422] text-white p-4 shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">
-            Task<span className="text-[#EB5E28]">Master</span>
-          </h1>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm hidden md:inline">
-              Welcome, {user?.email}
-            </span>
-            <button
-              onClick={() => setIsAddTaskModalOpen(true)}
-              className="bg-[#EB5E28] hover:bg-[#d55523] text-white px-4 py-2 rounded-md transition duration-300"
-            >
-              Add New Task
-            </button>
-            <button
-              onClick={signOut}
-              className="text-white hover:text-[#EB5E28] transition duration-300"
-            >
-              Sign Out
-            </button>
+        <div className="container mx-auto">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+            <h1 className="text-2xl font-bold">
+              Task<span className="text-[#EB5E28]">Master</span>
+            </h1>
+            <div className="flex flex-col sm:flex-row items-center sm:space-x-4 space-y-2 sm:space-y-0 w-full sm:w-auto">
+              <span className="text-sm text-center w-full sm:w-auto">
+                Welcome, {user?.email}
+              </span>
+              <div className="flex space-x-2 w-full sm:w-auto justify-center sm:justify-end">
+                <button
+                  onClick={() => setIsAddTaskModalOpen(true)}
+                  className="bg-[#EB5E28] hover:bg-[#d55523] text-white px-4 py-2 rounded-md transition duration-300"
+                >
+                  Add New Task
+                </button>
+                <button
+                  onClick={handleSignOutClick}
+                  className="bg-transparent hover:bg-gray-700 text-white px-4 py-2 rounded-md transition duration-300"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </header>
+
+      {/* Sign Out Alert Modal */}
+      {showSignOutAlert && (
+        <div className="fixed inset-0 backdrop-blur-sm backdrop-blur-xs bg-opacity-30 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 border-l-4 border-[#EB5E28]">
+            <h3 className="text-xl font-semibold text-[#252422] mb-3">
+              Sign Out Confirmation
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to sign out from TaskMaster?
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={cancelSignOut}
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmSignOut}
+                className="px-4 py-2 bg-[#EB5E28] hover:bg-[#d55523] text-white rounded-md transition duration-200"
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main className="container mx-auto p-4">
         <TaskDashboard tasks={tasks} />
